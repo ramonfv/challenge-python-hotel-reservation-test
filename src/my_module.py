@@ -1,18 +1,15 @@
 import math
 
-class Client:
-    def __init__(self,SAP):
-        if SAP == 'Regular':
-            self.fidelity = False
-        elif SAP == 'Rewards':
-            self.fidelity = True
-        else:
-            raise Exception("invalid") 
+# Function that assing the expression for fidelity program 
+def __hasFidelity__(fidelityProgram):
+    if fidelityProgram == 'Regular':
+        return False
+    elif fidelityProgram == 'Rewards':
+        return True
+    else:
+        raise Exception("Invalid expression for fidelity: " + fidelityProgram)
 
-    def hasFidelity(self):
-        return self.fidelity   
-
-
+# The class Hotel have methods for get name of hotel, get classification and get the days od week
 class Hotel:
     def __init__(self, name, classification, weekValue, weekValueFidelity,  weekendValue,  weekendValueFidelity):
         self.name = name
@@ -28,23 +25,23 @@ class Hotel:
     def getName(self):
         return self.name       
     
-    def dailyValue(self, client, dayOfWeek):
+    def dailyValue(self, fidelity, dayOfWeek):
         if dayOfWeek in ["mon", "tues", "wed", "thur", "fri"]:
-            if client.hasFidelity():
+            if fidelity:
                return self.weekValueFidelity
             return self.weekValue 
         elif dayOfWeek in ["sat", "sun"]:
-            if client.hasFidelity():
+            if fidelity:
                 return self.weekendValueFidelity
             return self.weekendValue
         else:
             raise Exception("Invalid day of week: " + dayOfWeek)
 
-
-
+# function that get the best price for hotel
 def get_cheapest_hotel(input):   #DO NOT change the function's name
+    
     checkIn = input.split(':')
-    client = Client(checkIn[0])
+    fidelity = __hasFidelity__(checkIn[0])
 
     lakewood = Hotel('Lakewood', 3, 110, 80, 90, 80)
     bridgewood = Hotel('Bridgewood', 4, 160, 110, 60, 50)
@@ -57,18 +54,20 @@ def get_cheapest_hotel(input):   #DO NOT change the function's name
         hotels[2]:[],
     }
 
+# get the days od week and assign the corresponding price
     daysOfWeek = checkIn[1].split(',')
-    for unformatedDay in daysOfWeek:
-        dayOfWeek = unformatedDay[unformatedDay.find("(")+1:unformatedDay.find(")")]
+    for beginIndex in daysOfWeek:
+        endIndex = beginIndex[beginIndex.find("(")+1:beginIndex.find(")")]
         for hotel in hotels:
             prices = hotelPrices[hotel]
-            priceForDay = hotel.dailyValue(client, dayOfWeek)
+            priceForDay = hotel.dailyValue(fidelity, endIndex)
             prices.append(priceForDay)
             hotelPrices[hotel] = prices
     
     bestPrice = math.inf
     bestHotel = hotels[0]
 
+# sum days of week and return the best value for holtel
     for hotel in hotels:
         prices = hotelPrices[hotel]
         totalPrice = sum(prices)
