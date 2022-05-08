@@ -35,3 +35,7 @@ Entrada 1:
 Regular: 16Mar2009(mon), 17Mar2009(tues), 18Mar2009(wed)
 Saída 1:
 Lakewood
+
+```
+# Orientações
+O arquivo principal está localizado na pasta src no arquivo my_module.py
